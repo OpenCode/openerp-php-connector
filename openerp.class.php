@@ -155,19 +155,37 @@ class OpenERP {
 			return 0;
 		}
 	
-	function search($relation,$attribute,$operator,$keys) {
+	function traverse_structure($ids) {
+		$return_ids = array();
+		$iterator = new RecursiveArrayIterator($ids);
+		while ( $iterator -> valid() ) {
+			if ( $iterator -> hasChildren() ) { 
+				$return_ids = array_merge( $return_ids, $this->traverse_structure($iterator -> getChildren()) ); 
+				} 
+			else { 
+				if ($iterator -> key() == 'int') {
+					$return_ids = array_merge( $return_ids, array( $iterator -> current() ) );
+					}
+				}
+			$iterator -> next(); 
+			}
+		return $return_ids;
+		}
+    
+	function search($relation,$attribute,$operator,$keys, $keys_type) {
 		$client = new xmlrpc_client("http://localhost:8069/xmlrpc/object");
+		//$client->return_type = 'phpvals';
 
 		$key = array(
 				new xmlrpcval(array(new xmlrpcval($attribute , "string"),
 				new xmlrpcval($operator,"string"),
-				new xmlrpcval($keys,"string")),"array"),
+				new xmlrpcval($keys, $keys_type)),"array"),
 			);
 
 		$msg = new xmlrpcmsg('execute');
-		$msg->addParam(new xmlrpcval($this->database, "string"));  //* database name */
-		$msg->addParam(new xmlrpcval($this->uid, "int")); /* useid */
-		$msg->addParam(new xmlrpcval($this->passwrod, "string"));/** password */
+        $msg->addParam(new xmlrpcval($this->database, "string"));  //* database name */
+        $msg->addParam(new xmlrpcval($this->uid, "int")); /* useid */
+        $msg->addParam(new xmlrpcval($this->passwrod, "string"));/** password */
 		$msg->addParam(new xmlrpcval($relation, "string"));
 		$msg->addParam(new xmlrpcval("search", "string"));
 		$msg->addParam(new xmlrpcval($key, "array"));
@@ -176,8 +194,8 @@ class OpenERP {
 		$val = $resp->value();
 		$ids = $val->scalarval();
 
-		return $ids;
-		}
+		return $this->traverse_structure($ids);
+	}
 
 }
 
