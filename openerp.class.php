@@ -1,15 +1,21 @@
 <?php
-/* OpenERP PHP connection script. Under GPL V3 , All Rights Are Reserverd , tejas.tank.mca@gmail.com
+/* 
+ * BASED ON ORIGINAL:
+ * 		OpenERP PHP connection script. Under GPL V3 , All Rights Are Reserverd , tejas.tank.mca@gmail.com
  *
- * @Author : Tejas L Tank.
- * @Email : tejas.tank.mca@gmail.com
- * @Country : India
- * @Date : 14 Feb 2011
- * @License : GPL V3
- * @Contact : www.facebook.com/tejaskumar.tank or www.linkedin.com/profile/view?id=48881854
+ * 		@Author : Tejas L Tank.
+ * 		@Email : tejas.tank.mca@gmail.com
+ * 		@Country : India
+ * 		@Date : 14 Feb 2011
+ * 		@License : GPL V3
+ * 		@Contact : www.facebook.com/tejaskumar.tank or www.linkedin.com/profile/view?id=48881854
  *
- *
- * OpenERP XML-RPC connections methods are db, common, object , report , wizard
+ * FORK DATAS
+ * 
+ * 		@Developer : Francesco OpenCode Apruzzese
+ * 		@Email : cescoap@gmail.com
+ * 		@Country : Italy
+ * 		@Contact : http://www.linkedin.com/in/francescoapruzzese
  *
  */
 session_start();
@@ -25,6 +31,7 @@ class OpenERP {
 	public $passwrod = "";/** @password = password require to login at openerp server * */
 
 	public function login($username = "admin", $password="a", $database="test", $server="http://localhost:8069/xmlrpc/") {
+		
 		$this->server = $server;
 		$this->database = $database;
 		$this->username = $username;
@@ -47,11 +54,12 @@ class OpenERP {
 		else {
 			return -1; //** if userid not exists , username or password wrong.. */
 			}
+
 		}
 
 	public function create($values, $model_name) {
-		$client = new xmlrpc_client("http://localhost:8069/xmlrpc/object");
-
+		
+		$client = new xmlrpc_client($this->server . "object");
 
 		//   ['execute','userid','password','module.name',{values....}]
 		$msg = new xmlrpcmsg('execute');
@@ -67,18 +75,17 @@ class OpenERP {
 			return -1; /* if the record is not created  */
 		else
 			return $resp->value()->scalarval();  /* return new generated id of record */
+
 		}
 
 	public function write($ids, $values, $model_name) {
-		$client = new xmlrpc_client("http://localhost:8069/xmlrpc/object");
-		//   ['execute','userid','password','module.name',{values....}]
+		
+		$client = new xmlrpc_client($this->server . "object");
 
 		$id_val = array();
 		$count = 0;
 		foreach ($ids as $id)
 			$id_val[$count++] = new xmlrpcval($id, "int");
-
-
 
 		$msg = new xmlrpcmsg('execute');
 		$msg->addParam(new xmlrpcval($this->database, "string"));  //* database name */
@@ -94,9 +101,11 @@ class OpenERP {
 			return -1;  /* if the record is not writable or not existing the ids or not having permissions  */
 		else
 			return $resp->value()->scalarval();  /* return new generated id of record */
+
 		}
 
 	public function read($ids, $fields, $model_name) {
+		
 		$client = new xmlrpc_client($this->server."object");
 		$client->return_type = 'phpvals';
 
@@ -126,12 +135,12 @@ class OpenERP {
 			return -1;  /* if the record is not writable or not existing the ids or not having permissions  */
 		else
 			return ( $resp->value() );
+
 		}
 
 	public function unlink($ids , $model_name) {
-		
-		$client = new xmlrpc_client("http://localhost:8069/xmlrpc/object");
-	  
+
+		$client = new xmlrpc_client($this->server . "object");
 		$client->return_type = 'phpvals';
 
 		$id_val = array();
@@ -151,11 +160,12 @@ class OpenERP {
 		if ($resp->faultCode())
 			return -1;  /* if the record is not writable or not existing the ids or not having permissions  */
 		else
-			print_r( $resp->value() );
 			return 0;
+
 		}
 	
 	function traverse_structure($ids) {
+
 		$return_ids = array();
 		$iterator = new RecursiveArrayIterator($ids);
 		while ( $iterator -> valid() ) {
@@ -170,22 +180,23 @@ class OpenERP {
 			$iterator -> next(); 
 			}
 		return $return_ids;
+
 		}
     
 	function search($relation,$attribute,$operator,$keys, $keys_type) {
-		$client = new xmlrpc_client("http://localhost:8069/xmlrpc/object");
-		//$client->return_type = 'phpvals';
+
+		$client = new xmlrpc_client($this->server . "object"
 
 		$key = array(
-				new xmlrpcval(array(new xmlrpcval($attribute , "string"),
-				new xmlrpcval($operator,"string"),
-				new xmlrpcval($keys, $keys_type)),"array"),
+			new xmlrpcval(array(new xmlrpcval($attribute , "string"),
+			new xmlrpcval($operator,"string"),
+			new xmlrpcval($keys, $keys_type)),"array"),
 			);
 
 		$msg = new xmlrpcmsg('execute');
-        $msg->addParam(new xmlrpcval($this->database, "string"));  //* database name */
-        $msg->addParam(new xmlrpcval($this->uid, "int")); /* useid */
-        $msg->addParam(new xmlrpcval($this->passwrod, "string"));/** password */
+		$msg->addParam(new xmlrpcval($this->database, "string"));  //* database name */
+		$msg->addParam(new xmlrpcval($this->uid, "int")); /* useid */
+		$msg->addParam(new xmlrpcval($this->passwrod, "string"));/** password */
 		$msg->addParam(new xmlrpcval($relation, "string"));
 		$msg->addParam(new xmlrpcval("search", "string"));
 		$msg->addParam(new xmlrpcval($key, "array"));
@@ -195,6 +206,7 @@ class OpenERP {
 		$ids = $val->scalarval();
 
 		return $this->traverse_structure($ids);
+
 	}
 
 }
