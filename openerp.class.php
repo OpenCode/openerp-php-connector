@@ -185,7 +185,7 @@ class OpenERP {
     
 	function search($relation,$attribute,$operator,$keys, $keys_type) {
 
-		$client = new xmlrpc_client($this->server . "object"
+		$client = new xmlrpc_client($this->server . "object");
 
 		$key = array(
 			new xmlrpcval(array(new xmlrpcval($attribute , "string"),
