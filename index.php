@@ -9,10 +9,10 @@
 	// SEARCH
 	$partner_by_name_ids = $rpc->search('res.partner', 'name', 'like', 'openerp', 'string');
 	echo 'SEARCH PARTNERS BY NAME IDS:<br />';
-	print_r($partner_ids);
+	print_r($partner_by_name_ids);
 	$partner_by_id_ids = $rpc->search('res.partner', 'id', '>', 100, 'int');
 	echo 'SEARCH PARTNERS BY ID IDS:<br />';
-	print_r($partner_ids);
+	print_r($partner_by_id_ids);
 
 	// READ
 	$fields = array(
