@@ -32,12 +32,13 @@
 		'part'=>array(7,'int'),
 		);
 	$res = $rpc->call_function('sale.order','onchange_partner_id',$ids,$vals);
+	$res_val = $res->structmem('value');
 
-	$user_id = $res->structmem('user_id')->scalarval();
-	$partner_invoice_id = $res->structmem('partner_invoice_id')->scalarval();
-	$partner_shipping_id = $res->structmem('partner_shipping_id')->scalarval();
-	$payment_term = $res->structmem('payment_term')->scalarval();
-	$fiscal_position = $res->structmem('fiscal_position')->scalarval();
+	$user_id = $res_val->structmem('user_id')->scalarval();
+	$partner_invoice_id = $res_val->structmem('partner_invoice_id')->scalarval();
+	$partner_shipping_id = $res_val->structmem('partner_shipping_id')->scalarval();
+	$payment_term = $res_val->structmem('payment_term')->scalarval();
+	$fiscal_position = $res_val->structmem('fiscal_position')->scalarval();
 	echo 'ONCHANGE_PARTNER_ID VALUES<br />'
 	echo 'USER ID ' . $user_id . '<br />';
 	echo 'PARTNER INVOICE ID ' . $partner_invoice_id . '<br />';

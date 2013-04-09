@@ -238,7 +238,7 @@ class OpenERP {
 			}
 		else {
 			$res = $resp->value();
-			return $res->structmem('value');
+			return $res;
 			}
  
 		}
