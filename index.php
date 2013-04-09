@@ -24,5 +24,25 @@
 	foreach ($partners as $p){
 		echo $p['ref'] . ' - ' . $p['name']. '<br />';
 	}
+	
+	// CALL ON_CHANGHE FUNCTION
+	// Call the onchange_partner_id function in sale.order for order with id 6 and partner_id 7
+	$ids = array(6);
+	$vals = array(
+		'part'=>array(7,'int'),
+		);
+	$res = $rpc->call_function('sale.order','onchange_partner_id',$ids,$vals);
+
+	$user_id = $res->structmem('user_id')->scalarval();
+	$partner_invoice_id = $res->structmem('partner_invoice_id')->scalarval();
+	$partner_shipping_id = $res->structmem('partner_shipping_id')->scalarval();
+	$payment_term = $res->structmem('payment_term')->scalarval();
+	$fiscal_position = $res->structmem('fiscal_position')->scalarval();
+	echo 'ONCHANGE_PARTNER_ID VALUES<br />'
+	echo 'USER ID ' . $user_id . '<br />';
+	echo 'PARTNER INVOICE ID ' . $partner_invoice_id . '<br />';
+	echo 'PARTNER SHIPPING ID ' . $partner_shipping_id . '<br />';
+	echo 'PAYMENT TERM ID ' . $payment_term . '<br />';
+	echo 'FISCAL POSITION ID ' . $fiscal_position . '<br />';
 
 ?>

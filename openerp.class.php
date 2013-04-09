@@ -31,7 +31,7 @@ class OpenERP {
 	public $passwrod = "";/** @password = password require to login at openerp server * */
 
 	public function login($username = "admin", $password="a", $database="test", $server="http://localhost:8069/xmlrpc/") {
-		
+
 		$this->server = $server;
 		$this->database = $database;
 		$this->username = $username;
@@ -58,7 +58,7 @@ class OpenERP {
 		}
 
 	public function create($values, $model_name) {
-		
+
 		$client = new xmlrpc_client($this->server . "object");
 
 		//   ['execute','userid','password','module.name',{values....}]
@@ -79,7 +79,7 @@ class OpenERP {
 		}
 
 	public function write($ids, $values, $model_name) {
-		
+
 		$client = new xmlrpc_client($this->server . "object");
 
 		$id_val = array();
@@ -105,7 +105,7 @@ class OpenERP {
 		}
 
 	public function read($ids, $fields, $model_name) {
-		
+
 		$client = new xmlrpc_client($this->server."object");
 		$client->return_type = 'phpvals';
 
@@ -118,8 +118,6 @@ class OpenERP {
 		$count = 0;
 		foreach ($fields as $field)
 			$fields_val[$count++] = new xmlrpcval($field, "string");
-
-
 
 		$msg = new xmlrpcmsg('execute');
 		$msg->addParam(new xmlrpcval($this->database, "string"));  //* database name */
@@ -134,7 +132,7 @@ class OpenERP {
 		if ($resp->faultCode())
 			return -1;  /* if the record is not writable or not existing the ids or not having permissions  */
 		else
-			return ( $resp->value() );
+			return $resp->value();
 
 		}
 
@@ -163,7 +161,7 @@ class OpenERP {
 			return 0;
 
 		}
-	
+
 	function traverse_structure($ids) {
 
 		$return_ids = array();
@@ -183,7 +181,7 @@ class OpenERP {
 
 		}
     
-	function search($relation,$attribute,$operator,$keys, $keys_type) {
+	public function search($relation,$attribute,$operator,$keys, $keys_type) {
 
 		$client = new xmlrpc_client($this->server . "object");
 
@@ -208,6 +206,42 @@ class OpenERP {
 		return $this->traverse_structure($ids);
 
 	}
+	
+	public function call_function($model,$function,$ids,$params) {
+
+		$client = new xmlrpc_client($this->server . "object");
+
+		$id_val = array();
+		$count = 0;
+		foreach ($ids as $id)
+			$id_val[$count++] = new xmlrpcval($id, "int");
+			
+		$msg = new xmlrpcmsg('execute');
+		$msg->addParam(new xmlrpcval($this->database, "string"));
+		$msg->addParam(new xmlrpcval($this->uid, "int"));
+		$msg->addParam(new xmlrpcval($this->passwrod, "string"));
+		$msg->addParam(new xmlrpcval($model, "string"));
+		$msg->addParam(new xmlrpcval($function, "string"));
+		$msg->addParam(new xmlrpcval($id_val, "array"));
+		
+		// Send parameter to function
+		foreach ($params as $param){
+			$param_value = $param[0];
+			$param_type = $param[1];
+			$msg->addParam(new xmlrpcval($param_value, $param_type));
+			}
+
+		// Functions return values
+ 		$resp = $client->send($msg);
+		if ($resp->faultCode()){
+			return 'Error: '.$resp->faultString();
+			}
+		else {
+			$res = $resp->value();
+			return $res->structmem('value');
+			}
+ 
+		}
 
 }
 
