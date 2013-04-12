@@ -28,20 +28,20 @@ class OpenERP {
 	public $database = "test";
 	public $uid = "";/**  @uid = once user succesful login then this will asign the user id */
 	public $username = ""; /*     * * @userid = general name of user which require to login at openerp server */
-	public $passwrod = "";/** @password = password require to login at openerp server * */
+	public $password = "";/** @password = password require to login at openerp server * */
 
 	public function login($username = "admin", $password="a", $database="test", $server="http://localhost:8069/xmlrpc/") {
 
 		$this->server = $server;
 		$this->database = $database;
 		$this->username = $username;
-		$this->passwrod = $password;
+		$this->password = $password;
 
 		$sock = new xmlrpc_client($this->server . 'common');
 		$msg = new xmlrpcmsg('login');
 		$msg->addParam(new xmlrpcval($this->database, "string"));
 		$msg->addParam(new xmlrpcval($this->username, "string"));
-		$msg->addParam(new xmlrpcval($this->passwrod, "string"));
+		$msg->addParam(new xmlrpcval($this->password, "string"));
 
 		$resp = $sock->send($msg);
 		$val = $resp->value();
@@ -65,7 +65,7 @@ class OpenERP {
 		$msg = new xmlrpcmsg('execute');
 		$msg->addParam(new xmlrpcval($this->database, "string"));  //* database name */
 		$msg->addParam(new xmlrpcval($this->uid, "int")); /* useid */
-		$msg->addParam(new xmlrpcval($this->passwrod, "string"));/** password */
+		$msg->addParam(new xmlrpcval($this->password, "string"));/** password */
 		$msg->addParam(new xmlrpcval($model_name, "string"));/** model name where operation will held * */
 		$msg->addParam(new xmlrpcval("create", "string"));/** method which u like to execute */
 		$msg->addParam(new xmlrpcval($values, "struct"));/** parameters of the methods with values....  */
@@ -90,7 +90,7 @@ class OpenERP {
 		$msg = new xmlrpcmsg('execute');
 		$msg->addParam(new xmlrpcval($this->database, "string"));  //* database name */
 		$msg->addParam(new xmlrpcval($this->uid, "int")); /* useid */
-		$msg->addParam(new xmlrpcval($this->passwrod, "string"));/** password */
+		$msg->addParam(new xmlrpcval($this->password, "string"));/** password */
 		$msg->addParam(new xmlrpcval($model_name, "string"));/** model name where operation will held * */
 		$msg->addParam(new xmlrpcval("write", "string"));/** method which u like to execute */
 		$msg->addParam(new xmlrpcval($id_val, "array"));/** ids of record which to be updting..   this array must be xmlrpcval array */
@@ -122,7 +122,7 @@ class OpenERP {
 		$msg = new xmlrpcmsg('execute');
 		$msg->addParam(new xmlrpcval($this->database, "string"));  //* database name */
 		$msg->addParam(new xmlrpcval($this->uid, "int")); /* useid */
-		$msg->addParam(new xmlrpcval($this->passwrod, "string"));/** password */
+		$msg->addParam(new xmlrpcval($this->password, "string"));/** password */
 		$msg->addParam(new xmlrpcval($model_name, "string"));/** model name where operation will held * */
 		$msg->addParam(new xmlrpcval("read", "string"));/** method which u like to execute */
 		$msg->addParam(new xmlrpcval($id_val, "array"));/** ids of record which to be updting..   this array must be xmlrpcval array */
@@ -149,7 +149,7 @@ class OpenERP {
 		$msg = new xmlrpcmsg('execute');
 		$msg->addParam(new xmlrpcval($this->database, "string"));  //* database name */
 		$msg->addParam(new xmlrpcval($this->uid, "int")); /* useid */
-		$msg->addParam(new xmlrpcval($this->passwrod, "string"));/** password */
+		$msg->addParam(new xmlrpcval($this->password, "string"));/** password */
 		$msg->addParam(new xmlrpcval($model_name, "string"));/** model name where operation will held * */
 		$msg->addParam(new xmlrpcval("unlink", "string"));/** method which u like to execute */
 		$msg->addParam(new xmlrpcval($id_val, "array"));/** ids of record which to be updting..   this array must be xmlrpcval array */
@@ -194,7 +194,7 @@ class OpenERP {
 		$msg = new xmlrpcmsg('execute');
 		$msg->addParam(new xmlrpcval($this->database, "string"));  //* database name */
 		$msg->addParam(new xmlrpcval($this->uid, "int")); /* useid */
-		$msg->addParam(new xmlrpcval($this->passwrod, "string"));/** password */
+		$msg->addParam(new xmlrpcval($this->password, "string"));/** password */
 		$msg->addParam(new xmlrpcval($relation, "string"));
 		$msg->addParam(new xmlrpcval("search", "string"));
 		$msg->addParam(new xmlrpcval($key, "array"));
@@ -219,7 +219,7 @@ class OpenERP {
 		$msg = new xmlrpcmsg('execute');
 		$msg->addParam(new xmlrpcval($this->database, "string"));
 		$msg->addParam(new xmlrpcval($this->uid, "int"));
-		$msg->addParam(new xmlrpcval($this->passwrod, "string"));
+		$msg->addParam(new xmlrpcval($this->password, "string"));
 		$msg->addParam(new xmlrpcval($model, "string"));
 		$msg->addParam(new xmlrpcval($function, "string"));
 		$msg->addParam(new xmlrpcval($id_val, "array"));
