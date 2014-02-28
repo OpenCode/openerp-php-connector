@@ -7,10 +7,19 @@
     $rpc->login("admin", "admin", "database_name", "database_host:8069/xmlrpc/");
 
     // SEARCH
-    $partner_by_name_ids = $rpc->search('res.partner', 'name', 'like', 'openerp', 'string');
+    $filter=Array(
+        Array('name', 'like', 'openerp')
+    );
+    $partner_by_name_ids = $rpc->search('res.partner', $filter);
     echo 'SEARCH PARTNERS BY NAME IDS:<br />';
     print_r($partner_by_name_ids);
-    $partner_by_id_ids = $rpc->search('res.partner', 'id', '>', 100, 'int');
+
+    $new_filter=Array(
+        Array('id', '>', 100),
+        Array('id', '<', 120)
+    );
+
+    $partner_by_id_ids = $rpc->search('res.partner', $new_filter);
     echo 'SEARCH PARTNERS BY ID IDS:<br />';
     print_r($partner_by_id_ids);
 
@@ -46,7 +55,7 @@
     $partner_shipping_id = $res_val->structmem('partner_shipping_id')->scalarval();
     $payment_term = $res_val->structmem('payment_term')->scalarval();
     $fiscal_position = $res_val->structmem('fiscal_position')->scalarval();
-    echo 'ONCHANGE_PARTNER_ID VALUES<br />'
+    echo 'ONCHANGE_PARTNER_ID VALUES<br />';
     echo 'USER ID ' . $user_id . '<br />';
     echo 'PARTNER INVOICE ID ' . $partner_invoice_id . '<br />';
     echo 'PARTNER SHIPPING ID ' . $partner_shipping_id . '<br />';
